@@ -2,5 +2,7 @@ __pycache__/
 .pytest_cache
 src/__pycache__/
 src/serve/__pycache__/
+src/data/__pycache__/
+src/models/__pycache__/
+src/visualization/__pycache__/
 poetry.lock
-/data
