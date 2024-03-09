@@ -1,0 +1,6 @@
+__pycache__/
+.pytest_cache
+src/__pycache__/
+src/serve/__pycache__/
+poetry.lock
+/data
