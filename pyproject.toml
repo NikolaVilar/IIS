@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "iis"
+version = "0.1.0"
+description = ""
+authors = ["Nikola Vilar <nikola.vilar@student.um.si>"]
+readme = "README.md"
+packages = [
+    { include = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.1"
+numpy = "^1.26.4"
+matplotlib = "^3.8.3"
+scikit-learn = "^1.4.1.post1"
+tensorflow = "^2.16.1"
+flask = "^3.0.2"
+requests = "^2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+fetch-data = "src.data.fetch_data:main"
+preprocess-data = "src.data.preprocess_data:main"
