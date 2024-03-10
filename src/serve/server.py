@@ -38,7 +38,7 @@ def predict_endpoint():
     prediction = math.floor(prediction)
     print(prediction)
 
-    return jsonify({'data': prediction}), 200
+    return jsonify({'prediction': prediction}), 200
 
 
 def main():

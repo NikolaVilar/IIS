@@ -1,0 +1,25 @@
+name: Run pytest on push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.10" # Adjust the Python version if necessary
+
+      - name: Install dependencies and run pytest
+        run: |
+          pip install poetry
+          poetry install
+          poetry run pytest
