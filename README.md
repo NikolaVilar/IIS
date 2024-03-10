@@ -13,3 +13,9 @@ poetry env use Path
 poetry install
 -> install missing libraries by hand by using poetry add <name>
 ```
+
+### Run Docker
+```
+docker build -t iis .
+docker run -p 5000:5000 iis
+```
