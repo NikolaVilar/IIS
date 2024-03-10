@@ -46,6 +46,5 @@ def main():
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-
 if __name__ == '__main__':
     main()

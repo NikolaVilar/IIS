@@ -16,11 +16,9 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 WORKDIR /app
 
-COPY pyproject.toml ./
+COPY . .
 
 RUN poetry install
-
-COPY . .
 
 CMD poetry run server
 
