@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9.10" # Adjust the Python version if necessary
+          python-version: "3.9" # Adjust the Python version if necessary
 
       - name: Install dependencies and run pytest
         run: |
