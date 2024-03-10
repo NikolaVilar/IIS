@@ -19,6 +19,7 @@ pandas = "^2.0.0"
 matplotlib = "^3.4.3"
 numpy = "^1.22,<1.24"
 pytest = "^8.1.1"
+flask-cors = "^4.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.3"
@@ -32,3 +33,4 @@ fetch-data = "src.data.fetch_data:main"
 preprocess-data = "src.data.preprocess_data:main"
 train-model = "src.models.train_model:main"
 predict-model = "src.models.predict_model:main"
+server = "src.serve.server:main"
