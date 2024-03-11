@@ -30,7 +30,6 @@ def main():
 
     data_path = os.path.join(root_dir, 'data', 'processed', 'data.csv')
     train_report_path = os.path.join(root_dir, 'reports', 'train_metrics.txt')
-    test_report_path = os.path.join(root_dir, 'reports', 'metrics.txt')
     model_path = os.path.join(root_dir, 'models', 'simple-rnn.h5')
     window_size = 12
     
