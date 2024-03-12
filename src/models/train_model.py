@@ -13,7 +13,7 @@ def build_model(input_shape):
     print('Model build in process.')
     model = Sequential([
         SimpleRNN(10, input_shape=input_shape),
-        Dense(1)
+        Dense(input_shape[1])
     ])
     model.compile(optimizer='adam', loss='mse')
     return model
@@ -33,7 +33,7 @@ def main():
     csv_logger = CSVLogger(train_report_path)
 
     X_train, y_train, X_test, y_test = reshaper.test_train_split(df)
-    train_model(X_train, y_train, (window_size, 1), csv_logger, model_path)
+    train_model(X_train, y_train, (window_size, len(df.columns)-1), csv_logger, model_path)
 
 if __name__ == '__main__':
     main()
