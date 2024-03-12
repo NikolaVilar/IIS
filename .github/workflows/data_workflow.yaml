@@ -40,7 +40,7 @@ jobs:
       - name: Commit changes
         run: |
           git add .
-          git commit -m "Data fetch update"
+          git commit -m "gitbot: fetch data"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
