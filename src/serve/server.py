@@ -1,44 +1,79 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from tensorflow.keras.models import load_model
+from src.constants.model_constants import window_size
+from src.constants.model_constants import columns
+from src.constants.model_constants import model_path
+from src.constants.model_constants import scaler_path
+from src.constants.data_constants import processed_data_path
+from src.serve.utils import is_complete
+from src.models.utils import helper
+import pandas as pd
 import numpy as np
-import math
-import os
 
-
-window_size = 12
 
 app = Flask(__name__)
 
 def predict(X):
-    root_dir = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../..'))
-    model_path = os.path.join(root_dir, 'models', 'simple-rnn.h5')
     model = load_model(model_path)
     y_pred = model.predict(X)
+
+    y_pred = helper.unscale_data(y_pred, scaler_path)
+    y_pred = np.round(y_pred, 2)
+    y_pred[:, 0] = np.floor(y_pred[:, 0])
+
+
     return y_pred
 
+@app.route('/mbajk/predict', methods=['GET'])
+@cross_origin()
+def get_prediction():
+    df = helper.load_data(processed_data_path)
+    df = df.drop(columns='date_hour')
+
+    X_test = helper.get_latest_values(df)
+    prediction = predict(X_test)
+
+    json_response = {
+        'hours': helper.generate_hours(len(prediction)),
+        'available_bike_stands': prediction[:, 0].tolist(), 
+        'temperature': prediction[:, 1].tolist(), 
+        'relative_humidity': prediction[:, 2].tolist(), 
+        'dew_point': prediction[:, 3].tolist()
+        }
+
+    print(json_response)
+    return jsonify(json_response), 200
 
 
 @app.route('/mbajk/predict', methods=['POST'])
 @cross_origin()
-def predict_endpoint():
-    data = request.json.get('data')
-    if data is None:
-        return jsonify({'error': 'Data not found in request body'}), 400
+def post_prediction():
+    data = request.json
+    if not is_complete(list(data.keys()), columns):
+        return jsonify({'error': 'Missing properies of data are present.'}), 400
     
-    data_array = np.array(data)
+    df = pd.DataFrame(data)
+    df = df.reindex(columns=columns)
     
-    if len(data_array) < window_size:
+    if len(df.values) < window_size:
         return jsonify({'error': f'Data length must be at least {window_size}'}), 400
     
+    X = helper.scale_data(df, scaler_path)
+    X = X.reshape(-1, window_size, len(columns))
 
-    X = data_array.reshape(1, -1)
-    prediction = predict(X).reshape(1, )
-    prediction = math.floor(prediction)
-    print(prediction)
+    prediction = predict(X)
 
-    return jsonify({'prediction': prediction}), 200
+    json_response = {
+        'hours': helper.generate_hours(len(prediction)),
+        'available_bike_stands': prediction[:, 0].tolist(), 
+        'temperature': prediction[:, 1].tolist(), 
+        'relative_humidity': prediction[:, 2].tolist(), 
+        'dew_point': prediction[:, 3].tolist()
+        }
+
+    print(json_response)
+    return jsonify(json_response), 200
 
 
 def main():
