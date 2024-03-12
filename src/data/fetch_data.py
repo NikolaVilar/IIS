@@ -58,6 +58,8 @@ def merge_data(ndf, data_path):
 def save_data(df, data_path):
     df = merge_data(df, data_path)
     df.to_csv(data_path)
+    print("Successfully saved data")
+
 
 
 def main():
@@ -79,6 +81,7 @@ def main():
 
     weather_data = fetch_api('weather')
     weather_data = to_df(weather_data, 'weather')
+    weather_data.rename(columns={'temperature_2m': 'temperature', 'relative_humidity_2m': 'relative_humidity', 'dew_point_2m':'dew_point'}, inplace=True)
 
 
     save_data(mbajk_data, mbajk_data_path)
