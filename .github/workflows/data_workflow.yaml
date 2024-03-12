@@ -43,6 +43,6 @@ jobs:
           git commit -m "Data fetch update"
 
       - name: Push changes
-        uses: ad-m/github-push-action@v0.7
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
