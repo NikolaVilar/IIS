@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  server:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    restart: always
+    networks:
+      - mynet
+
+  client:
+    build:
+      context: ./src/client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    restart: always
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      driver: default

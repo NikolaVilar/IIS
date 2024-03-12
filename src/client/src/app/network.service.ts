@@ -12,7 +12,7 @@ export class NetworkService {
   constructor(private httpClient: HttpClient, private datePipe: DatePipe) {}
 
   getForecast(): Observable<any> {
-    const url = 'http://localhost:5000/mbajk/predict';
+    const url = 'http://server:5000/mbajk/predict';
     return this.httpClient.get<any>(url).pipe(
       map((temp) => {
         const data: {

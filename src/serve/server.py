@@ -13,6 +13,7 @@ import numpy as np
 
 
 app = Flask(__name__)
+CORS(app, resources={r"/mbajk/*": {"origins": "http://client:4200"}})
 
 def predict(X):
     model = load_model(model_path)
@@ -78,7 +79,6 @@ def post_prediction():
 
 def main():
     app.run(host='0.0.0.0', port=5000)
-    cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 if __name__ == '__main__':
