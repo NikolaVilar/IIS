@@ -16,9 +16,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9" # Adjust the Python version if necessary
+          python-version: "3.9"
 
-      - name: Install dependencies and run pytest
+      - name: Install dependencies
         run: |
           pip install poetry
           poetry install

@@ -1,0 +1,48 @@
+name: Data Workflow
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "* 1 * * *"
+jobs:
+  install_deps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+
+      - name: Fecth data
+        run: |
+          poetry run fetch-data
+
+      - name: Preprocess data
+        run: |
+          poetry run preprocess-data
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Data fetch update"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.7
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
