@@ -13,7 +13,7 @@ def get_url():
     date = datetime.now()
     date = date.strftime('%Y-%m-%d')
     url = WEATHER_URL + f'latitude={lat}&longitude={lon}&'
-    url += '&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&forecast_days=1'
+    url += '&hourly=temperature_2m,relative_humidity_2m,dew_point_2m&forecast_days=1'
     return url
 
 def fetch_api(api):
