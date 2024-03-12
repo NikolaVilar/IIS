@@ -2,10 +2,13 @@ import json
 import requests
 import pandas as pd
 from datetime import datetime
-import os
+from src.constants.data_constants import MABJK_URL
+from src.constants.data_constants import WEATHER_URL
+from src.constants.data_constants import mbajk_api_source
+from src.constants.data_constants import weather_api_source
+from src.constants.data_constants import mbajk_api_data_path
+from src.constants.data_constants import weather_api_data_path
 
-MABJK_URL = "https://api.jcdecaux.com/vls/v1/stations?contract=maribor&apiKey=5e150537116dbc1786ce5bec6975a8603286526b"
-WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?'
 lat = 0
 lon = 0
 
@@ -18,7 +21,7 @@ def get_url():
 
 def fetch_api(api):
     data = []
-    url = MABJK_URL if api == 'mbajk' else get_url()
+    url = MABJK_URL if api == mbajk_api_source else get_url()
     print(f'GET: {url}')
     response = requests.get(url)
     if response.status_code == 200:
@@ -30,7 +33,7 @@ def fetch_api(api):
     
 
 def to_df(data, source):
-    if  source != 'mbajk':
+    if  source != mbajk_api_source:
         data = data['hourly']
         return pd.DataFrame(data)
     
@@ -42,7 +45,7 @@ def to_df(data, source):
     return pd.DataFrame(data)
 
 def get_date_column(data_path):
-    return "last_update" if "mbajk" in data_path else "time"
+    return "last_update" if mbajk_api_source in data_path else "time"
 
 def merge_data(ndf, data_path):
     df = pd.read_csv(data_path, index_col=0)
@@ -66,26 +69,18 @@ def main():
     global lat
     global lon
 
-    root_dir = os.path.abspath(os.path.join(
-        os.path.dirname(__file__), '../..'))
-
-    mbajk_data_path = os.path.join(root_dir, 'data', 'raw', 'mbajk', 'mbajk_api.csv')
-    weather_data_path = os.path.join(root_dir, 'data', 'raw', 'weather', 'weather_api.csv')
-
-
-    mbajk_data = fetch_api('mbajk')
-    mbajk_data = to_df(mbajk_data, 'mbajk')
+    mbajk_data = fetch_api(mbajk_api_source)
+    mbajk_data = to_df(mbajk_data, mbajk_api_source)
 
     lat = mbajk_data['lat'].values[0]
     lon = mbajk_data['lng'].values[0]
 
-    weather_data = fetch_api('weather')
-    weather_data = to_df(weather_data, 'weather')
+    weather_data = fetch_api(weather_api_source)
+    weather_data = to_df(weather_data, weather_api_source)
     weather_data.rename(columns={'temperature_2m': 'temperature', 'relative_humidity_2m': 'relative_humidity', 'dew_point_2m':'dew_point'}, inplace=True)
 
-
-    save_data(mbajk_data, mbajk_data_path)
-    save_data(weather_data, weather_data_path)
+    save_data(mbajk_data, mbajk_api_data_path)
+    save_data(weather_data, weather_api_data_path)
 
 if __name__ == '__main__':
     main()

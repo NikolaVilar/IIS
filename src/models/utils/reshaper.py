@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from src.constants.model_constants import window_size
 
 
 def load_data(file_path):
@@ -7,7 +8,7 @@ def load_data(file_path):
     return data
 
 
-def build_sequences(df, window_size):
+def build_sequences(df):
     print('Sequence build in process.')
 
     X = []
@@ -21,7 +22,7 @@ def build_sequences(df, window_size):
     return X, y
 
 
-def test_train_split(df, window_size):
+def test_train_split(df):
     print('Test, train split in process.')
 
     split_index = len(df) - (7 * window_size)
@@ -29,7 +30,7 @@ def test_train_split(df, window_size):
     train_df = df.iloc[:split_index]
     test_df = df.iloc[split_index:]
 
-    X_train, y_train = build_sequences(train_df, window_size)
-    X_test, y_test = build_sequences(test_df, window_size)
+    X_train, y_train = build_sequences(train_df)
+    X_test, y_test = build_sequences(test_df)
 
     return X_train.reshape(-1, window_size, 1), y_train, X_test.reshape(-1, window_size, 1), y_test
