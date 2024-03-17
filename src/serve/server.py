@@ -13,7 +13,7 @@ import numpy as np
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/mbajk/*": {"origins": "http://client:4200"}})
+CORS(app)
 
 def predict(X):
     model = load_model(model_path)
