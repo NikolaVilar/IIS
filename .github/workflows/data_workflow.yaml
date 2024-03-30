@@ -26,6 +26,7 @@ jobs:
           poetry install
 
   test_api_availability:
+    needs: install_deps
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
