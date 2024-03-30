@@ -23,5 +23,21 @@ jobs:
           pip install poetry
           poetry install
 
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull -r origin
+
       - name: Run pytest
         run: poetry run pytest tests/test_service.py
