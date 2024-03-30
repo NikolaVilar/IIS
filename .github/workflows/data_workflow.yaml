@@ -135,6 +135,7 @@ jobs:
         run: |
           git config --global user.email "nikola.vilar@student.um.si"
           git config --global user.name "Nikola Vilar"
+          git rm -r --cached 'data'
 
       - name: Pull changes
         run: |
