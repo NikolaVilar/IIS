@@ -72,14 +72,7 @@ def list_files(directory):
         print(file)
 
 
-def main():
-    root_dir = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../..'))
-    print('root')
-    list_files(root_dir)
-    print('data')
-    list_files(os.path.join(root_dir, 'data', 'raw', 'mbajk'))
-    
+def main():    
     global lat
     global lon
 
