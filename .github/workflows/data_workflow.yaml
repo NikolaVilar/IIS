@@ -85,7 +85,7 @@ jobs:
       - name: Pull changes
         run: |
           git pull
-          dvc pull
+          dvc pull -r origin
 
       - name: Fecth data
         run: |
@@ -101,7 +101,7 @@ jobs:
 
       - name: Push to dvc
         run: |
-          dvc push
+          dvc push -r origin
 
   preprocess_data:
     needs: fetch_data
@@ -135,12 +135,11 @@ jobs:
         run: |
           git config --global user.email "nikola.vilar@student.um.si"
           git config --global user.name "Nikola Vilar"
-          git rm -r --cached 'data'
 
       - name: Pull changes
         run: |
           git pull
-          dvc pull
+          dvc pull -r origin
 
       - name: Preprocess data
         run: |
@@ -156,4 +155,4 @@ jobs:
 
       - name: Push to dvc
         run: |
-          dvc push
+          dvc push -r origin
