@@ -24,7 +24,9 @@ jobs:
           cache: poetry
 
       - name: Install deps
-        run: poetry install
+        run: |
+          poetry lock
+          poetry install
 
   test_api_availability:
     needs: install_deps
