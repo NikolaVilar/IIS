@@ -8,6 +8,7 @@ from src.constants.data_constants import mbajk_api_source
 from src.constants.data_constants import weather_api_source
 from src.constants.data_constants import mbajk_api_data_path
 from src.constants.data_constants import weather_api_data_path
+import os
 
 lat = 0
 lon = 0
@@ -63,9 +64,22 @@ def save_data(df, data_path):
     df.to_csv(data_path)
     print("Successfully saved data")
 
+def list_files(directory):
+    files = os.listdir(directory)
+    
+    # Print each file
+    for file in files:
+        print(file)
 
 
 def main():
+    root_dir = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../..'))
+    print('root')
+    list_files(root_dir)
+    print('data')
+    list_files(os.path.join(root_dir, 'data', 'raw', 'mbajk'))
+    
     global lat
     global lon
 
