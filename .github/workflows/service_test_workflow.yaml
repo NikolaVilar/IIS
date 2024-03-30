@@ -1,4 +1,4 @@
-name: Run pytest on push
+name: Service Test
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
           poetry install
 
       - name: Run pytest
-        run: poetry run pytest
+        run: poetry run pytest tests/test_service.py

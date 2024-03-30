@@ -27,7 +27,6 @@ jobs:
 
   test_api_availability:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -47,7 +46,7 @@ jobs:
           poetry run pytest tests/test_api_availability.py
 
   fetch_data:
-    needs: test_api_availabilitys
+    needs: test_api_availability
     runs-on: ubuntu-latest
     outputs:
       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
