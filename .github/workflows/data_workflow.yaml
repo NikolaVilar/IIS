@@ -6,10 +6,10 @@ on:
       - main
   schedule:
     - cron: "0 * * * *"
+
 jobs:
   install_deps:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -18,31 +18,138 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.9"
+          cache: "poetry"
 
       - name: Install dependencies
         run: |
           pip install poetry
           poetry install
 
+  test_api_availability:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up poetry
+        run: |
+          pip install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - name: Test API availability
+        run: |
+          poetry run pytest tests/test_api_availability.py
+
+  fetch_data:
+    needs: test_api_availabilitys
+    runs-on: ubuntu-latest
+    outputs:
+      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup poetry
+        run: |
+          pip install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull
+
       - name: Fecth data
         run: |
           poetry run fetch-data
+
+      - name: Add data
+        run: |
+          dvc add data
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "gitbot: fetch data"
+
+      - name: Push to dvc
+        run: |
+          dvc push
+
+  preprocess_data:
+    needs: fetch_data
+    runs-on: ubuntu-latest
+    outputs:
+      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup poetry
+        run: |
+          pip install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull
 
       - name: Preprocess data
         run: |
           poetry run preprocess-data
 
-      - name: Configure Git
+      - name: Add data
         run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+          dvc add data
 
-      - name: Commit changes
-        run: |
-          git add .
-          git commit -m "gitbot: fetch data"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "gitbot: preprocess data"
+
+      - name: Push to dvc
+        run: |
+          dvc push
