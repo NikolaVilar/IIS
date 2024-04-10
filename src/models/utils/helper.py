@@ -12,6 +12,17 @@ def load_data(file_path):
     data = pd.read_csv(file_path, index_col=0)
     return data
 
+def set_column_types(df):
+    df['available_bike_stands'] = df['available_bike_stands'].astype(int)
+    df['temperature'] = df['temperature'].astype(float)
+    df['relative_humidity'] = df['relative_humidity'].astype(float)
+    df['dew_point'] = df['dew_point'].astype(float)
+    return df
+
+def to_test(df):
+    df.rename(columns={'available_bike_stands': 'target'}, inplace=True)
+    df['prediction'] = df['target'].values + np.random.normal(0, 5, df.shape[0])
+    return df
 
 def build_sequences(df):
     print('Sequence build in process.')

@@ -10,6 +10,7 @@ current_data_path = os.path.join(root_dir, 'data', 'processed', 'current_data.cs
 reference_data_path = os.path.join(root_dir, 'data', 'processed', 'reference_data.csv')
 train_data_path = os.path.join(root_dir, 'data', 'split', 'train_data.csv')
 test_data_path = os.path.join(root_dir, 'data', 'split', 'test_data.csv')
+report_path = os.path.join(root_dir, 'reports', 'data_drift.html')
 
 
 MABJK_URL = "https://api.jcdecaux.com/vls/v1/stations?contract=maribor&apiKey=5e150537116dbc1786ce5bec6975a8603286526b"
