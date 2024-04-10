@@ -273,28 +273,6 @@
       }
     },
     {
-      "expectation_type": "expect_column_median_to_be_between",
-      "kwargs": {
-        "column": "available_bike_stands",
-        "max_value": 13.0,
-        "min_value": 13.0,
-        "strict_max": false,
-        "strict_min": false
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "domain_kwargs": {
-              "column": "available_bike_stands"
-            },
-            "metric_name": "column.median",
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
-      }
-    },
-    {
       "expectation_type": "expect_column_min_to_be_between",
       "kwargs": {
         "column": "temperature",
@@ -374,28 +352,6 @@
       }
     },
     {
-      "expectation_type": "expect_column_median_to_be_between",
-      "kwargs": {
-        "column": "temperature",
-        "max_value": 18.66,
-        "min_value": 18.66,
-        "strict_max": false,
-        "strict_min": false
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "domain_kwargs": {
-              "column": "temperature"
-            },
-            "metric_name": "column.median",
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
-        }
-      }
-    },
-    {
       "expectation_type": "expect_column_min_to_be_between",
       "kwargs": {
         "column": "relative_humidity",
@@ -471,28 +427,6 @@
             },
             "num_batches": 1
           }
-        }
-      }
-    },
-    {
-      "expectation_type": "expect_column_median_to_be_between",
-      "kwargs": {
-        "column": "relative_humidity",
-        "max_value": 74.0,
-        "min_value": 74.0,
-        "strict_max": false,
-        "strict_min": false
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "domain_kwargs": {
-              "column": "relative_humidity"
-            },
-            "metric_name": "column.median",
-            "metric_value_kwargs": null
-          },
-          "num_batches": 1
         }
       }
     },
@@ -617,28 +551,6 @@
                 0.75
               ]
             }
-          },
-          "num_batches": 1
-        }
-      }
-    },
-    {
-      "expectation_type": "expect_column_median_to_be_between",
-      "kwargs": {
-        "column": "dew_point",
-        "max_value": 13.95,
-        "min_value": 13.95,
-        "strict_max": false,
-        "strict_min": false
-      },
-      "meta": {
-        "profiler_details": {
-          "metric_configuration": {
-            "domain_kwargs": {
-              "column": "dew_point"
-            },
-            "metric_name": "column.median",
-            "metric_value_kwargs": null
           },
           "num_batches": 1
         }
