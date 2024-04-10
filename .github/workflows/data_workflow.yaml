@@ -156,3 +156,149 @@ jobs:
       - name: Push to dvc
         run: |
           dvc push -r origin
+
+  validate_data:
+    needs: preprocess_data
+    runs-on: ubuntu-latest
+    outputs:
+      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup poetry
+        run: |
+          pip install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull -r origin
+
+      - name: Validate data
+        run: poetry run validate-data
+
+      - name: Deploy DataDocs to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: "gx/uncommitted/data_docs/local_site"
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  test_stability:
+    needs: preprocess_data
+    runs-on: ubuntu-latest
+    outputs:
+      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup poetry
+        run: |
+          pip install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull -r origin
+
+      - name: Test stability of data
+        run: poetry run stability-data
+
+  update_split_data:
+    needs: [validate_data, test_stability]
+    runs-on: ubuntu-latest
+    outputs:
+      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup poetry
+        run: |
+          pip install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+          cache: "poetry"
+
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
+
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull -r origin
+
+      - name: Update reference and split data
+        run: |
+          poetry run update-data
+          poetry run split-data
+
+      - name: Add data
+        run: |
+          dvc add data
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "gitbot: reference updated data"
+
+      - name: Push to dvc
+        run: |
+          dvc push -r origin
