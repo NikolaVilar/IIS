@@ -25,6 +25,7 @@ from great_expectations.data_context import FileDataContext  # noqa: TCH001
 from great_expectations.util import get_context
 
 import os
+import json
 
 
 def main():
@@ -44,6 +45,8 @@ def main():
 
     if not result["success"]:
         print("Data validation failed!")
+        print("Detailed validation results:")
+        print(result["run_results"])
         sys.exit(1)
 
     print("Data validation succeeded!")

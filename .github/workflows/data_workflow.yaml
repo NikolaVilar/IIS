@@ -196,9 +196,7 @@ jobs:
           dvc pull -r origin
 
       - name: Validate data
-        run: |
-          poetry install
-          poetry run validate-data
+        run: poetry run validate-data
 
       - name: Deploy DataDocs to Netlify
         uses: nwtgck/actions-netlify@v1.2
@@ -248,9 +246,7 @@ jobs:
           dvc pull -r origin
 
       - name: Test stability of data
-        run: |
-          poetry install
-          poetry run stability-data
+        run: poetry run stability-data
 
   update_split_data:
     needs: [validate_data, test_stability]
