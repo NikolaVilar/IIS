@@ -30,7 +30,6 @@ def predict(X):
 @cross_origin()
 def get_prediction():
     df = helper.load_data(reference_data_path)
-    df = df.drop(columns='date_hour')
 
     X_test = helper.get_latest_values(df)
     prediction = predict(X_test)
