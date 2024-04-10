@@ -23,7 +23,6 @@ def test_train_split(df):
     
 def main():    
     df = helper.load_data(reference_data_path)
-    df = df.drop(columns='date_hour')
     test_train_split(df)
 
 
