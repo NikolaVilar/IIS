@@ -9,9 +9,9 @@ from src.models.utils import helper
 
 def test_train_split(df):
     print('Test, train split in process.')
-
-    split_index = len(df) - (8 * window_size)
-    print(len(df), split_index)
+    
+    split_index = int(len(df) * 0.9)  # 10% of the freshest data
+    print(f"Total size: {len(df)}. Split index: {split_index}")
     
     train_df = df.iloc[:split_index]
     test_df = df.iloc[split_index:]

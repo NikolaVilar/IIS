@@ -6,6 +6,8 @@ from src.constants.data_constants import train_data_path
 from src.constants.model_constants import model_path
 from src.constants.model_constants import train_report_path
 from src.constants.model_constants import window_size
+from src.constants.model_constants import MLFLOW_TRACKING_URI
+import mlflow
 
 
 def build_model(input_shape):
@@ -18,22 +20,32 @@ def build_model(input_shape):
     return model
 
 
-def train_model(X_train, y_train, input_shape, logger, model_path):
+def train_model(X_train, y_train, input_shape, model_path):
     print('Model training in process.')
+    
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    mlflow.set_experiment("bike-rental")
+    mlflow.autolog()
+    
+    csv_logger = CSVLogger(train_report_path)
 
     model = build_model(input_shape)
-    model.fit(X_train, y_train, epochs=10, batch_size=32, callbacks=[logger])
+    model.fit(X_train, y_train, epochs=10, batch_size=32, callbacks=[csv_logger])
     model.save(model_path)
+    
+    mlflow.log_artifact(train_report_path)
+    mlflow.tensorflow.log_model(model, artifact_path="TimeSeries", registered_model_name="TimeSeries")
+    
     return model
 
 
 def main():    
     train_df = helper.load_data(train_data_path)
-    csv_logger = CSVLogger(train_report_path)
+    
 
     X_train, y_train = helper.to_sequence(train_df)
     
-    train_model(X_train, y_train, (window_size, len(train_df.columns)), csv_logger, model_path)
+    train_model(X_train, y_train, (window_size, len(train_df.columns)), model_path)
 
 if __name__ == '__main__':
     main()
