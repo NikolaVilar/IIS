@@ -6,7 +6,7 @@ from src.constants.data_constants import weather_api_source
 from src.constants.data_constants import mbajk_dataset_path
 from src.constants.data_constants import mbajk_api_data_path
 from src.constants.data_constants import weather_api_data_path
-from src.constants.data_constants import processed_data_path
+from src.constants.data_constants import current_data_path
 from src.constants.data_constants import datetime_format
 
 
@@ -55,10 +55,10 @@ def aggregate_data(data_path, source):
     print(f'Data aggregation complete: {source}')
     return result
 
-def save_data(mbajk_dataset, mbajk_api_data, processed_data_path):
+def save_data(mbajk_dataset, mbajk_api_data, current_data_path):
     df = pd.concat([mbajk_dataset, mbajk_api_data], axis=0).reset_index(drop=True)
     df = df.sort_values(by='date_hour')
-    df.to_csv(processed_data_path)
+    df.to_csv(current_data_path)
     
 
 def main():
@@ -68,7 +68,7 @@ def main():
 
     mbajk_api_data = pd.merge(mbajk_api_data, weather_api_data, on='date_hour', how='inner')
 
-    save_data(mbajk_dataset, mbajk_api_data, processed_data_path)
+    save_data(mbajk_dataset, mbajk_api_data, current_data_path)
 
 
 if __name__ == '__main__':

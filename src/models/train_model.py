@@ -2,7 +2,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, Dense
 from tensorflow.keras.callbacks import CSVLogger
 from src.models.utils import helper
-from src.constants.data_constants import processed_data_path
+from src.constants.data_constants import train_data_path
 from src.constants.model_constants import model_path
 from src.constants.model_constants import train_report_path
 from src.constants.model_constants import window_size
@@ -28,13 +28,12 @@ def train_model(X_train, y_train, input_shape, logger, model_path):
 
 
 def main():    
-    df = helper.load_data(processed_data_path)
+    train_df = helper.load_data(train_data_path)
     csv_logger = CSVLogger(train_report_path)
 
-    df = df.drop(columns='date_hour')
-    X_train, y_train, X_test, y_test = helper.test_train_split(df)
-
-    train_model(X_train, y_train, (window_size, len(df.columns)), csv_logger, model_path)
+    X_train, y_train = helper.to_sequence(train_df)
+    
+    train_model(X_train, y_train, (window_size, len(train_df.columns)), csv_logger, model_path)
 
 if __name__ == '__main__':
     main()

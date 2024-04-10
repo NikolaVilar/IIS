@@ -21,9 +21,14 @@ matplotlib = "^3.4.3"
 numpy = "^1.22,<1.24"
 pytest = "^8.1.1"
 flask-cors = "^4.0.0"
+great-expectations = "^0.18.12"
+evidently = "^0.4.19"
+mlflow = "^2.11.3"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.3"
+black = "^24.3.0"
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -32,6 +37,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 fetch-data = "src.data.fetch_data:main"
 preprocess-data = "src.data.preprocess_data:main"
+split-data = "src.data.split_data:main"
 train-model = "src.models.train_model:main"
 predict-model = "src.models.predict_model:main"
 server = "src.serve.server:main"

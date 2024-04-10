@@ -5,7 +5,7 @@ from src.constants.model_constants import window_size
 from src.constants.model_constants import columns
 from src.constants.model_constants import model_path
 from src.constants.model_constants import scaler_path
-from src.constants.data_constants import processed_data_path
+from src.constants.data_constants import current_data_path
 from src.serve.utils import is_complete
 from src.models.utils import helper
 import pandas as pd
@@ -29,7 +29,7 @@ def predict(X):
 @app.route('/mbajk/predict', methods=['GET'])
 @cross_origin()
 def get_prediction():
-    df = helper.load_data(processed_data_path)
+    df = helper.load_data(current_data_path)
     df = df.drop(columns='date_hour')
 
     X_test = helper.get_latest_values(df)

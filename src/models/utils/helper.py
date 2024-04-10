@@ -54,21 +54,10 @@ def scale_data(data, scaler_path):
     data = scaler.transform(data)    
     return data
 
-def test_train_split(df):
-    print('Test, train split in process.')
-
-    split_index = len(df) - (8 * window_size)
-    print(len(df), split_index)
-    
-    train_df = df.iloc[:split_index]
-    test_df = df.iloc[split_index:]
-    
-    train_df, test_df = scale_data_training(train_df, test_df, columns, scaler_path)
-
-    X_train, y_train = build_sequences(train_df)
-    X_test, y_test = build_sequences(test_df)
-
-    return X_train.reshape(-1, window_size, len(df.columns)), y_train, X_test.reshape(-1, window_size, len(df.columns)), y_test
+def to_sequence(df):
+    print('Sequence build in progress.')
+    X, y = build_sequences(df)
+    return X.reshape(-1, window_size, len(df.columns)), y
 
 def get_latest_values(df):
     split_index = len(df) - (7 * window_size)

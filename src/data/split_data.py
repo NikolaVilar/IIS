@@ -1,0 +1,33 @@
+
+from src.constants.model_constants import window_size
+from src.constants.model_constants import columns
+from src.constants.model_constants import scaler_path
+from src.constants.data_constants import train_data_path
+from src.constants.data_constants import test_data_path
+from src.constants.data_constants import reference_data_path
+from src.models.utils import helper
+
+def test_train_split(df):
+    print('Test, train split in process.')
+
+    split_index = len(df) - (8 * window_size)
+    print(len(df), split_index)
+    
+    train_df = df.iloc[:split_index]
+    test_df = df.iloc[split_index:]
+    
+    train_df, test_df = helper.scale_data_training(train_df, test_df, columns, scaler_path)
+    train_df.to_csv(train_data_path)
+    train_df.to_csv(test_data_path)
+    
+    
+def main():    
+    df = helper.load_data(reference_data_path)
+    df = df.drop(columns='date_hour')
+    test_train_split(df)
+
+
+if __name__ == '__main__':
+    main()    
+    
+    
