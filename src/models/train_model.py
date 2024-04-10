@@ -34,7 +34,6 @@ def train_model(X_train, y_train, input_shape, model_path):
     model.save(model_path)
     
     mlflow.log_artifact(train_report_path)
-    mlflow.tensorflow.log_model(model, artifact_path="TimeSeries", registered_model_name="TimeSeries")
     
     return model
 
