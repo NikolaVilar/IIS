@@ -151,5 +151,5 @@ def mlflow_promote_model(mlflow):
     client.set_registered_model_alias('SimpleRNN-Test', "production", version)
     # client.copy_model_version(
     #      src_model_uri="models:/SimpleRNN-Test@production",
-    #      dst_name="models:/Production",
+    #      dst_name="Production",
     # )    
