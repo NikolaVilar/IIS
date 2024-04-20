@@ -7,3 +7,4 @@ src/models/__pycache__/
 src/visualization/__pycache__/
 .venv
 /data
+/mlruns

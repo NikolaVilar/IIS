@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-from tensorflow.keras.models import load_model
 from src.constants.model_constants import window_size
-from src.constants.model_constants import columns
 from src.constants.model_constants import model_path
-from src.constants.model_constants import scaler_path
+from src.constants.model_constants import columns
 from src.constants.data_constants import reference_data_path
 from src.serve.utils import is_complete
 from src.models.utils import helper
@@ -13,13 +11,16 @@ import numpy as np
 
 
 app = Flask(__name__)
-CORS(app)
+
+mlflow = helper.mlflow_setup()
+model = helper.load_production_model(mlflow, 'SimpleRNN-Test')
+pipeline = helper.load_pipeline(mlflow, 'SimpleRNN-Train')
 
 def predict(X):
-    model = load_model(model_path)
     y_pred = model.predict(X)
 
-    y_pred = helper.unscale_data(y_pred, scaler_path)
+    y_pred = pipeline.inverse_transform(y_pred)  
+    y_pred = y_pred.astype(float)
     y_pred = np.round(y_pred, 2)
     y_pred[:, 0] = np.floor(y_pred[:, 0])
 
@@ -31,7 +32,8 @@ def predict(X):
 def get_prediction():
     df = helper.load_data(reference_data_path)
 
-    X_test = helper.get_latest_values(df)
+    X_test = helper.get_latest_values(df, mlflow, 'SimpleRNN-Test')
+    X_test = (pipeline.transform(X_test)).reshape(-1, window_size, len(columns))
     prediction = predict(X_test)
 
     json_response = {
@@ -59,7 +61,7 @@ def post_prediction():
     if len(df.values) < window_size:
         return jsonify({'error': f'Data length must be at least {window_size}'}), 400
     
-    X = helper.scale_data(df, scaler_path)
+    X = pipeline.transform(df)
     X = X.reshape(-1, window_size, len(columns))
 
     prediction = predict(X)
@@ -78,6 +80,7 @@ def post_prediction():
 
 def main():
     app.run(host='0.0.0.0', port=5000)
+    CORS(app)
 
 
 if __name__ == '__main__':

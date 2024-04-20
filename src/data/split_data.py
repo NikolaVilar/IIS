@@ -1,7 +1,4 @@
 
-from src.constants.model_constants import window_size
-from src.constants.model_constants import columns
-from src.constants.model_constants import scaler_path
 from src.constants.data_constants import train_data_path
 from src.constants.data_constants import test_data_path
 from src.constants.data_constants import reference_data_path
@@ -15,10 +12,9 @@ def test_train_split(df):
     
     train_df = df.iloc[:split_index]
     test_df = df.iloc[split_index:]
-    
-    train_df, test_df = helper.scale_data_training(train_df, test_df, columns, scaler_path)
+
     train_df.to_csv(train_data_path)
-    train_df.to_csv(test_data_path)
+    test_df.to_csv(test_data_path)
     
     
 def main():    

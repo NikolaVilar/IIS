@@ -1,42 +1,34 @@
-from sklearn import metrics
+
 from src.models.utils import helper
 from tensorflow.keras.models import load_model
 from src.constants.data_constants import test_data_path
 from src.constants.model_constants import model_path
-from src.constants.model_constants import scaler_path
-from src.constants.model_constants import test_report_path
-from src.constants.model_constants import MLFLOW_TRACKING_URI
-import mlflow
 
-def evaluate_model(X_test, y_test, model, report_path):
+mlflow = helper.mlflow_setup()
+
+def evaluate_model(X_test, y_test, model):
     print('Model evaluation in process.')
     
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    mlflow.set_experiment("bike-rental")
-    mlflow.autolog()
-
+    helper.mlflow_setup()
+    
     y_pred = model.predict(X_test)
-    y_pred = helper.unscale_data(y_pred, scaler_path)
-    y_test = helper.unscale_data(y_test, scaler_path)
+    y_pred = helper.unscale_data(y_pred, mlflow, 'SimpleRNN-Train')
+    y_test = helper.unscale_data(y_test, mlflow, 'SimpleRNN-Train')
 
-    mae = metrics.mean_absolute_error(y_test, y_pred)
-    mse = metrics.mean_squared_error(y_test, y_pred)
-    evs = metrics.explained_variance_score(y_test, y_pred)
+    helper.mlflow_log_model(model,'SimpleRNN-Test', X_test, mlflow)
+    helper.mlflow_log_metrics(y_test, y_pred, mlflow)
     
-    mlflow.log_metric("MSE Test", mse)
-    mlflow.log_metric("MAE Test", mae)
-    mlflow.log_metric("EVS Test", evs)
-    
-    with open(report_path, 'w') as file:
-        file.write(f'MAE:{mae}\nMSE:{mse}\nEVS:{evs}')
+    helper.mlflow_promote_model(mlflow)
 
 def main():
     test_df = helper.load_data(test_data_path)
+    test_df = helper.preprocess_data_testing(test_df, mlflow, 'SimpleRNN-Train')
+    
     X_test, y_test = helper.to_sequence(test_df)
     
-    model = load_model(model_path)
+    model = helper.load_model(mlflow, 'SimpleRNN-Train')
+    evaluate_model(X_test, y_test, model)
     
-    evaluate_model(X_test, y_test, model, test_report_path)
 
 if __name__ == '__main__':
     main()
