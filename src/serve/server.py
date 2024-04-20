@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from src.constants.model_constants import window_size
-from src.constants.model_constants import model_path
 from src.constants.model_constants import columns
 from src.constants.data_constants import reference_data_path
 from src.serve.utils import is_complete
