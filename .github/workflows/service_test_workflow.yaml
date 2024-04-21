@@ -7,7 +7,7 @@ on:
 
 jobs:
   install_deps:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
           poetry install
 
   api_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: install_deps
     steps:
       - name: Checkout code
