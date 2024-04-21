@@ -13,3 +13,4 @@ window_size = 8
 columns = ['available_bike_stands','temperature','relative_humidity','dew_point']
 
 MLFLOW_TRACKING_URI = "https://dagshub.com/NikolaVilar/IIS.mlflow"
+
