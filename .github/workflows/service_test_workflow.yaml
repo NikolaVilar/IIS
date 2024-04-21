@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  paths:
+    - src
 
 jobs:
   install_deps:
@@ -66,23 +68,6 @@ jobs:
   #       run: |
   #         poetry add mlflow==2.11.3 boto3==1.34.51 importlib-metadata==7.0.2 packaging==23.2 pandas==2.0.3 pydot==2.0.0 scipy==1.10.1
   #         poetry run pytest tests/test_service.py
-
-  delpoyment_check:
-    needs: install_deps
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Check src folder modifications
-        id: check_src_modifications
-        run: |
-          git diff --quiet HEAD~1..HEAD -- src
-          if [ $? -eq 0 ]; then
-            echo "::set-output name=src_modified::false"
-          else
-            echo "::set-output name=src_modified::true"
-          fi
 
   api_deploy:
     needs: delpoyment_check

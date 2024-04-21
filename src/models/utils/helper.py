@@ -34,6 +34,7 @@ def load_production_model(mlflow, name):
     model = mlflow.pyfunc.load_model(model_uri)
     return model
 
+
 def set_column_types(df):
     df['available_bike_stands'] = df['available_bike_stands'].astype(int)
     df['temperature'] = df['temperature'].astype(float)
