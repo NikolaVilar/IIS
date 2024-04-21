@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Setup poetry
-        run: pip install poetry
+      - name: Install deps
+        run: poetry install
 
       - name: Setup git config
         run: |
