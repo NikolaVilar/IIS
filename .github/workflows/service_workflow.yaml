@@ -119,13 +119,13 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/iis-server:latest
+          tags: nikolavilar/iis-server:latest
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: nikolavilar/iis-server
+          images: nikolavilar/iis-server:latest
 
       - name: Deploy to Northflank
         uses: northflank/deploy-to-northflank@v1
@@ -134,7 +134,7 @@ jobs:
           project-id: iis
           service-id: server
           credentials-id: iis-registry
-          image-path: nikolavilar/iis-server
+          image-path: ${{ steps.meta.outputs.tags }}
 
   deploy_client:
     needs: api_test
