@@ -1,9 +1,7 @@
 from src.serve.server import app
 from src.constants.model_constants import columns
-import time
 
 def test_post_request():
-    time.sleep(30)
     request_data = {
         "available_bike_stands": [0,2,7,8,6,5,8,10,11,7,4,12,0,2,7,8,6,5,8,10,11,7,4,12],
         "temperature": [12,15,17,15,14.5,12,12.5,13,14.6,16,17,13,12,15,17,15,14.5,12,12.5,13,14.6,16,17,13],
@@ -16,7 +14,6 @@ def test_post_request():
     assert all(column in response.json for column in columns)
 
 def test_get_request():
-    time.sleep(30)
     response = app.test_client().get('/mbajk/predict')
     assert response.status_code == 200
     assert all(column in response.json for column in columns)

@@ -8,12 +8,12 @@ from src.models.utils import helper
 import pandas as pd
 import numpy as np
 
-
-app = Flask(__name__)
-
 mlflow = helper.mlflow_setup()
 model = helper.load_production_model(mlflow, 'SimpleRNN-Test')
 pipeline = helper.load_pipeline(mlflow, 'SimpleRNN-Train')
+
+app = Flask(__name__)
+
 
 def predict(X):
     y_pred = model.predict(X)
