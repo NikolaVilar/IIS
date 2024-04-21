@@ -17,7 +17,6 @@ def load_data(file_path):
     data = pd.read_csv(file_path, index_col=0)
     return data
 
-
 def load_pipeline(mlflow, name):
     client = MlflowClient()
     run_id = client.get_registered_model(name).latest_versions[0].run_id

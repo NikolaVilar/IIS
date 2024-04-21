@@ -77,7 +77,7 @@ jobs:
       - name: Check src folder modifications
         id: check_src_modifications
         run: |
-          git diff --quiet HEAD^ -- src
+          git diff --quiet HEAD~1..HEAD -- src
           if [ $? -eq 0 ]; then
             echo "::set-output name=src_modified::false"
           else
