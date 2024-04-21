@@ -133,10 +133,10 @@ jobs:
           northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
           project-id: iis
           service-id: server
-          credentials-id: github
+          credentials-id: iis-registry
           image-path: ${{ steps.meta.outputs.tags }}
 
-  client_deploy:
+  deploy_client:
     needs: api_test
     runs-on: ubuntu-20.04
     steps:
