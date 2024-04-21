@@ -11,7 +11,7 @@ export class NetworkService {
 
   getForecast(): Observable<any> {
     // const url = 'http://localhost:5000/mbajk/predict';
-    const url = 'http://172.28.1.2:5000/mbajk/predict';
+    const url = 'https://p01--server--p6jjfyf442pk.code.run/mbajk/predict';
     return new Observable<any>((observer) => {
       fetch(url)
         .then((response) => {
