@@ -160,11 +160,11 @@ jobs:
           push: true
           tags: nikolavilar/iis-client:latest
       
-      # - name: Deploy to Northflank
-      #   uses: northflank/deploy-to-northflank@v1
-      #   with:
-      #     northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
-      #     project-id: iis
-      #     service-id: client
-      #     credentials-id: iis-registry
-      #     image-path: https://docker.io/nikolavilar/iis-client:latest
+      - name: Deploy to Northflank
+        uses: northflank/deploy-to-northflank@v1
+        with:
+          northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
+          project-id: iis
+          service-id: client
+          credentials-id: iis-registry
+          image-path: https://docker.io/nikolavilar/iis-client:latest
