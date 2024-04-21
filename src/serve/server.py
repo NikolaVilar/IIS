@@ -7,10 +7,19 @@ from src.serve.utils import is_complete
 from src.models.utils import helper
 import pandas as pd
 import numpy as np
+import pymongo
+import os
 
 mlflow = helper.mlflow_setup()
 model = helper.load_production_model(mlflow, 'SimpleRNN-Test')
 pipeline = helper.load_pipeline(mlflow, 'SimpleRNN-Train')
+
+
+mongo_uri = os.environ['MONGO_URI']
+mongo_uri = mongo_uri.replace('"', '')
+clientdb = pymongo.MongoClient(mongo_uri)
+db = clientdb.IIS
+col = db.record
 
 app = Flask(__name__)
 
@@ -42,6 +51,8 @@ def get_prediction():
         'relative_humidity': prediction[:, 2].tolist(), 
         'dew_point': prediction[:, 3].tolist()
         }
+    
+    col.insert_one(json_response.copy())
 
     print(json_response)
     return jsonify(json_response), 200
@@ -72,6 +83,8 @@ def post_prediction():
         'relative_humidity': prediction[:, 2].tolist(), 
         'dew_point': prediction[:, 3].tolist()
         }
+    
+    col.insert_one(json_response.copy())
 
     print(json_response)
     return jsonify(json_response), 200
