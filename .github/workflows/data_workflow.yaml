@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.9.10"
-          cache: poetry
 
       - name: Install deps
         run: |
@@ -41,7 +40,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - name: Test API availability
@@ -67,7 +66,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - uses: iterative/setup-dvc@v1
@@ -121,7 +120,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - uses: iterative/setup-dvc@v1
@@ -175,7 +174,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - uses: iterative/setup-dvc@v1
@@ -225,7 +224,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - uses: iterative/setup-dvc@v1
@@ -266,7 +265,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.9.10"
           cache: "poetry"
 
       - uses: iterative/setup-dvc@v1
