@@ -27,50 +27,50 @@ jobs:
         run: |
           poetry install
 
-  # api_test:
-  #   runs-on: ubuntu-20.04
-  #   needs: install_deps
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  api_test:
+    runs-on: ubuntu-20.04
+    needs: install_deps
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Setup poetry
-  #       run: pip install poetry
+      - name: Setup poetry
+        run: pip install poetry
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v3
-  #       with:
-  #         python-version: "3.9.10"
-  #         cache: poetry
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9.10"
+          cache: poetry
 
-  #     - name: Setup git config
-  #       run: |
-  #         git config --global user.email "nikola.vilar@student.um.si"
-  #         git config --global user.name "Nikola Vilar"
+      - name: Setup git config
+        run: |
+          git config --global user.email "nikola.vilar@student.um.si"
+          git config --global user.name "Nikola Vilar"
 
-  #     - uses: iterative/setup-dvc@v1
-  #     - name: Setup Dagshub
-  #       run: |
-  #         dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-  #         dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+      - uses: iterative/setup-dvc@v1
+      - name: Setup Dagshub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-  #     - name: Pull changes
-  #       run: |
-  #         git pull
-  #         dvc pull -r origin
+      - name: Pull changes
+        run: |
+          git pull
+          dvc pull -r origin
 
-  #     - name: Run pytest
-  #       env:
-  #         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-  #         MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
-  #         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
-  #         MONGO_URI: ${{ secrets.MONGO_URI }}
-  #       run: |
-  #         poetry add mlflow==2.11.3 boto3==1.34.51 importlib-metadata==7.0.2 packaging==23.2 pandas==2.0.3 pydot==2.0.0 scipy==1.10.1
-  #         poetry run pytest tests/test_service.py
+      - name: Run pytest
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: |
+          poetry add mlflow==2.11.3 boto3==1.34.51 importlib-metadata==7.0.2 packaging==23.2 pandas==2.0.3 pydot==2.0.0 scipy==1.10.1
+          poetry run pytest tests/test_service.py
 
   server_deploy:
-    needs: install_deps
+    needs: api_test
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -122,7 +122,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/iis-server:latest
 
   client_deploy:
-    needs: install_deps
+    needs: api_test
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code

@@ -26,12 +26,12 @@ def load_pipeline(mlflow, name):
 def load_model(mlflow, name):
     client = MlflowClient()
     run_id = client.get_registered_model(name).latest_versions[0].run_id
-    model = mlflow.pyfunc.load_model(f'runs:/{run_id}/{name}')
+    model = mlflow.tensorflow.load_model(f'runs:/{run_id}/{name}')
     return model
 
 def load_production_model(mlflow, name):
     model_uri = f"models:/{name}@production"
-    model = mlflow.pyfunc.load_model(model_uri)
+    model = mlflow.tensorflow.load_model(model_uri)
     return model
 
 def set_column_types(df):
@@ -120,7 +120,7 @@ def mlflow_log_metrics(y_test, y_pred, mlflow):
     
 def mlflow_log_model(model, name, X, mlflow):
     signature = infer_signature(X, model.predict(X))
-    mlflow.sklearn.log_model(model, signature=signature, artifact_path=name,
+    mlflow.tensorflow.log_model(model, signature=signature, artifact_path=name,
                              registered_model_name=name)
 
 def mlflow_log_train_loss(mlflow):
