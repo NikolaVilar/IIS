@@ -40,7 +40,9 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
-          cache: poetry
+
+      - name: Install MLflow
+        run: pip install mlflow
 
       - name: Fetch model dependencies
         run: mlflow pyfunc get_model_dependencies models:/${{ secrets.MODEL_NAME }}@production > environment.yml
