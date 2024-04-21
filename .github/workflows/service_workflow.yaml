@@ -1,4 +1,4 @@
-name: Service Test
+name: Service Workflow
 
 on:
   push:
@@ -69,7 +69,7 @@ jobs:
           poetry add mlflow==2.11.3 boto3==1.34.51 importlib-metadata==7.0.2 packaging==23.2 pandas==2.0.3 pydot==2.0.0 scipy==1.10.1
           poetry run pytest tests/test_service.py
 
-  server_deploy:
+  deploy_server:
     needs: api_test
     runs-on: ubuntu-20.04
     steps:
@@ -120,6 +120,21 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/iis-server:latest
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: nikolavilar/iis-server
+
+      - name: Deploy to Northflank
+        uses: northflank/deploy-to-northflank@v1
+        with:
+          northflank-api-key: ${{ secrets.NORTHFLANK_API_KEY }}
+          project-id: iis
+          service-id: server
+          credentials-id: github
+          image-path: ${{ steps.meta.outputs.tags }}
 
   client_deploy:
     needs: api_test
