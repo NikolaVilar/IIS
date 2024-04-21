@@ -6,8 +6,30 @@ on:
       - main
 
 jobs:
-  install_deps:
+  # install_deps:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Setup poetry
+  #       run: pip install poetry
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v3
+  #       with:
+  #         python-version: "3.9"
+  #         cache: poetry
+
+  #     - name: Install deps
+  #       run: |
+  #         poetry lock
+  #         poetry install
+
+  api_test:
+    needs: install_deps
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,30 +42,6 @@ jobs:
         with:
           python-version: "3.9"
           cache: poetry
-
-      - name: Install deps
-        run: |
-          poetry lock
-          poetry install
-
-  api_test:
-    needs: install_deps
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
-          cache: poetry
-
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry lock
 
       - name: Setup git config
         run: |
