@@ -134,7 +134,7 @@ jobs:
           project-id: iis
           service-id: server
           credentials-id: iis-registry
-          image-path: ${{ steps.meta.outputs.tags }}
+          image-path: https://docker.io/nikolavilar/iis-server:latest
 
   deploy_client:
     needs: api_test
