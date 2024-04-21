@@ -42,7 +42,7 @@ jobs:
           python-version: "3.9"
 
       - name: Fetch model dependencies
-              run: mlflow pyfunc get_model_dependencies models:/${{ secrets.MODEL_NAME }}@production > environment.yml
+        run: mlflow pyfunc get_model_dependencies models:/${{ secrets.MODEL_NAME }}@production > environment.yml
 
       - name: poetry install
         run: poetry install
