@@ -27,7 +27,6 @@ jobs:
   #         poetry install
 
   api_test:
-    needs: install_deps
     runs-on: ubuntu-latest
 
     steps:
