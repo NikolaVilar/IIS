@@ -25,7 +25,6 @@ jobs:
 
       - name: Install deps
         run: |
-          poetry lock
           poetry install
 
   test_api_availability:
