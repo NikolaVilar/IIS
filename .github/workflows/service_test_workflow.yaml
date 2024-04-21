@@ -70,8 +70,7 @@ jobs:
   #         poetry run pytest tests/test_service.py
 
   server_deploy:
-    needs: delpoyment_check
-    if: ${{ needs.delpoyment_check.outputs.src_modified == 'true' }}
+    needs: install_deps
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -123,8 +122,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/iis-server:latest
 
   client_deploy:
-    needs: delpoyment_check
-    if: needs.check.outputs.run_job == 'true'
+    needs: install_deps
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
