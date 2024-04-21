@@ -1,10 +1,10 @@
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import SimpleRNN, Dense
-from tensorflow.keras.callbacks import CSVLogger
 from src.constants.data_constants import train_data_path
 from src.constants.model_constants import model_path
 from src.constants.model_constants import train_report_path
 from src.constants.model_constants import window_size
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+from tensorflow.keras.callbacks import CSVLogger
 from src.models.utils import helper
 
 mlflow = helper.mlflow_setup()
