@@ -34,7 +34,6 @@ def load_production_model(mlflow, name):
     model = mlflow.pyfunc.load_model(model_uri)
     return model
 
-
 def set_column_types(df):
     df['available_bike_stands'] = df['available_bike_stands'].astype(int)
     df['temperature'] = df['temperature'].astype(float)
@@ -149,7 +148,3 @@ def mlflow_promote_model(mlflow):
     best_run = get_best_run(mlflow)
     version = get_model_version_from_run_id('SimpleRNN-Test', best_run)
     client.set_registered_model_alias('SimpleRNN-Test', "production", version)
-    # client.copy_model_version(
-    #      src_model_uri="models:/SimpleRNN-Test@production",
-    #      dst_name="Production",
-    # )    

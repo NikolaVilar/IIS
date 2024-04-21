@@ -1,8 +1,6 @@
 
 from src.models.utils import helper
-from tensorflow.keras.models import load_model
 from src.constants.data_constants import test_data_path
-from src.constants.model_constants import model_path
 
 mlflow = helper.mlflow_setup()
 
