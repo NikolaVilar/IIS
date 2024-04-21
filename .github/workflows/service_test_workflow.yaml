@@ -64,5 +64,4 @@ jobs:
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
-          poetry shell
           poetry run pytest tests/test_service.py
