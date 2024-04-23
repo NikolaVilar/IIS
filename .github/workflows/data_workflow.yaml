@@ -1,303 +1,303 @@
-name: Data Workflow
+# name: Data Workflow
 
-on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: "0 * * * *"
+# on:
+#   push:
+#     branches:
+#       - main
+#   schedule:
+#     - cron: "0 * * * *"
 
-jobs:
-  install_deps:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+# jobs:
+#   install_deps:
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Setup poetry
-        run: pip install poetry
+#       - name: Setup poetry
+#         run: pip install poetry
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: poetry
+#       - name: Set up Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: poetry
 
-      - name: Install deps
-        run: |
-          poetry install
+#       - name: Install deps
+#         run: |
+#           poetry install
 
-  test_api_availability:
-    needs: install_deps
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#   test_api_availability:
+#     needs: install_deps
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Set up poetry
-        run: |
-          pip install poetry
+#       - name: Set up poetry
+#         run: |
+#           pip install poetry
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Set up Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - name: Test API availability
-        run: |
-          poetry run pytest tests/test_api_availability.py
+#       - name: Test API availability
+#         run: |
+#           poetry run pytest tests/test_api_availability.py
 
-  fetch_data:
-    needs: test_api_availability
-    runs-on: ubuntu-20.04
-    outputs:
-      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#   fetch_data:
+#     needs: test_api_availability
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup poetry
-        run: |
-          pip install poetry
+#       - name: Setup poetry
+#         run: |
+#           pip install poetry
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Setup Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - uses: iterative/setup-dvc@v1
-      - name: Setup Dagshub
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+#       - uses: iterative/setup-dvc@v1
+#       - name: Setup Dagshub
+#         run: |
+#           dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+#           dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-      - name: Setup git config
-        run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+#       - name: Setup git config
+#         run: |
+#           git config --global user.email "nikola.vilar@student.um.si"
+#           git config --global user.name "Nikola Vilar"
 
-      - name: Pull changes
-        run: |
-          git pull
-          dvc pull -r origin
+#       - name: Pull changes
+#         run: |
+#           git pull
+#           dvc pull -r origin
 
-      - name: Fecth data
-        run: |
-          poetry run fetch-data
+#       - name: Fecth data
+#         run: |
+#           poetry run fetch-data
 
-      - name: Add data
-        run: |
-          dvc add data
+#       - name: Add data
+#         run: |
+#           dvc add data
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "gitbot: fetch data"
+#       - uses: stefanzweifel/git-auto-commit-action@v4
+#         with:
+#           commit_message: "gitbot: fetch data"
 
-      - name: Push to dvc
-        run: |
-          dvc push -r origin
+#       - name: Push to dvc
+#         run: |
+#           dvc push -r origin
 
-  preprocess_data:
-    needs: fetch_data
-    runs-on: ubuntu-20.04
-    outputs:
-      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#   preprocess_data:
+#     needs: fetch_data
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup poetry
-        run: |
-          pip install poetry
+#       - name: Setup poetry
+#         run: |
+#           pip install poetry
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Setup Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - uses: iterative/setup-dvc@v1
-      - name: Setup Dagshub
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+#       - uses: iterative/setup-dvc@v1
+#       - name: Setup Dagshub
+#         run: |
+#           dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+#           dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-      - name: Setup git config
-        run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+#       - name: Setup git config
+#         run: |
+#           git config --global user.email "nikola.vilar@student.um.si"
+#           git config --global user.name "Nikola Vilar"
 
-      - name: Pull changes
-        run: |
-          git pull
-          dvc pull -r origin
+#       - name: Pull changes
+#         run: |
+#           git pull
+#           dvc pull -r origin
 
-      - name: Preprocess data
-        run: |
-          poetry run preprocess-data
+#       - name: Preprocess data
+#         run: |
+#           poetry run preprocess-data
 
-      - name: Add data
-        run: |
-          dvc add data
+#       - name: Add data
+#         run: |
+#           dvc add data
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "gitbot: preprocess data"
+#       - uses: stefanzweifel/git-auto-commit-action@v4
+#         with:
+#           commit_message: "gitbot: preprocess data"
 
-      - name: Push to dvc
-        run: |
-          dvc push -r origin
+#       - name: Push to dvc
+#         run: |
+#           dvc push -r origin
 
-  validate_data:
-    needs: preprocess_data
-    runs-on: ubuntu-20.04
-    outputs:
-      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#   validate_data:
+#     needs: preprocess_data
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup poetry
-        run: |
-          pip install poetry
+#       - name: Setup poetry
+#         run: |
+#           pip install poetry
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Setup Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - uses: iterative/setup-dvc@v1
-      - name: Setup Dagshub
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+#       - uses: iterative/setup-dvc@v1
+#       - name: Setup Dagshub
+#         run: |
+#           dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+#           dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-      - name: Setup git config
-        run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+#       - name: Setup git config
+#         run: |
+#           git config --global user.email "nikola.vilar@student.um.si"
+#           git config --global user.name "Nikola Vilar"
 
-      - name: Pull changes
-        run: |
-          git pull
-          dvc pull -r origin
+#       - name: Pull changes
+#         run: |
+#           git pull
+#           dvc pull -r origin
 
-      - name: Validate data
-        run: poetry run validate-data
+#       - name: Validate data
+#         run: poetry run validate-data
 
-      - name: Deploy DataDocs to Netlify
-        uses: nwtgck/actions-netlify@v1.2
-        with:
-          publish-dir: "gx/uncommitted/data_docs/local_site"
-          production-deploy: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+#       - name: Deploy DataDocs to Netlify
+#         uses: nwtgck/actions-netlify@v1.2
+#         with:
+#           publish-dir: "gx/uncommitted/data_docs/local_site"
+#           production-deploy: true
+#         env:
+#           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+#           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-  test_stability:
-    needs: preprocess_data
-    runs-on: ubuntu-20.04
-    outputs:
-      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#   test_stability:
+#     needs: preprocess_data
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup poetry
-        run: |
-          pip install poetry
+#       - name: Setup poetry
+#         run: |
+#           pip install poetry
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Setup Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - uses: iterative/setup-dvc@v1
-      - name: Setup Dagshub
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+#       - uses: iterative/setup-dvc@v1
+#       - name: Setup Dagshub
+#         run: |
+#           dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+#           dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-      - name: Setup git config
-        run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+#       - name: Setup git config
+#         run: |
+#           git config --global user.email "nikola.vilar@student.um.si"
+#           git config --global user.name "Nikola Vilar"
 
-      - name: Pull changes
-        run: |
-          git pull
-          dvc pull -r origin
+#       - name: Pull changes
+#         run: |
+#           git pull
+#           dvc pull -r origin
 
-      - name: Test stability of data
-        run: poetry run stability-data
+#       - name: Test stability of data
+#         run: poetry run stability-data
 
-  update_split_data:
-    needs: [validate_data, test_stability]
-    runs-on: ubuntu-20.04
-    outputs:
-      sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+#   update_split_data:
+#     needs: [validate_data, test_stability]
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       sha_new: ${{steps.sha_new.outputs.SHA_NEW}}
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup poetry
-        run: |
-          pip install poetry
+#       - name: Setup poetry
+#         run: |
+#           pip install poetry
 
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9.10"
-          cache: "poetry"
+#       - name: Setup Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9.10"
+#           cache: "poetry"
 
-      - uses: iterative/setup-dvc@v1
-      - name: Setup Dagshub
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
+#       - uses: iterative/setup-dvc@v1
+#       - name: Setup Dagshub
+#         run: |
+#           dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+#           dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY}}
 
-      - name: Setup git config
-        run: |
-          git config --global user.email "nikola.vilar@student.um.si"
-          git config --global user.name "Nikola Vilar"
+#       - name: Setup git config
+#         run: |
+#           git config --global user.email "nikola.vilar@student.um.si"
+#           git config --global user.name "Nikola Vilar"
 
-      - name: Pull changes
-        run: |
-          git pull
-          dvc pull -r origin
+#       - name: Pull changes
+#         run: |
+#           git pull
+#           dvc pull -r origin
 
-      - name: Update reference and split data
-        run: |
-          poetry run update-data
-          poetry run split-data
+#       - name: Update reference and split data
+#         run: |
+#           poetry run update-data
+#           poetry run split-data
 
-      - name: Add data
-        run: |
-          dvc add data
+#       - name: Add data
+#         run: |
+#           dvc add data
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "gitbot: reference updated data"
+#       - uses: stefanzweifel/git-auto-commit-action@v4
+#         with:
+#           commit_message: "gitbot: reference updated data"
 
-      - name: Push to dvc
-        run: |
-          dvc push -r origin
+#       - name: Push to dvc
+#         run: |
+#           dvc push -r origin
